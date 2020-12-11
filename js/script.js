@@ -115,5 +115,35 @@ function renderCountryFavorites() {
 
 function renderCountrySummary() {
   countCountries.textContent = allCountries.length;
+  countFavorites.textContent = favoriteCountries.length;
+
+  const totalPopulation = allCountries.reduce((accumulator, current) => {
+    return accumulator + current.population;
+  }, 0);
+
+  const totalFavorites = favoriteCountries.reduce((accumulator, current) => {
+    return accumulator + current.population;
+  }, 0);
+
+  totalPopulationList.textContent = totalPopulation;
+  totalPopulationFavorites.textContent = totalFavorites;
+
+  //0-->represents first value
 }
-handleCountryButtons();
+
+function handleCountryButtons() {
+  const countryButtons = Array.from(tabCountries.querySelectorAll('.btn'));
+  const FavoriteButtons = Array.from(tabFavorites.querySelectorAll('.btn'));
+
+  countryButtons.forEach((button) => {
+    button.addEventListener('click', () => addToFavorites(button.id));
+  });
+
+  favoriteButtons.forEach((button) => {
+    button.addEventListener('click', () => removeFromFavorites(button.id));
+  });
+}
+
+function addToFavorites(id) {}
+
+function removeFromFavorites(id) {}
