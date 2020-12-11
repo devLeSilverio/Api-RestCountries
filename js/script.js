@@ -1,5 +1,5 @@
 let tabCountries = null;
-let tabFAvorites = null;
+let tabFavorites = null;
 
 let allCountries = [];
 let favoriteCountries = [];
@@ -38,6 +38,7 @@ async function fetchCountries() {
       id: numericCode,
       name: translations.pt,
       population,
+      formattedPopulation: formatNumber(population),
       flag,
     };
   });
@@ -57,7 +58,7 @@ function renderCountrylist() {
   let countriesHtml = '<div>';
 
   allCountries.forEach((country) => {
-    const { name, flag, id, population } = country;
+    const { name, flag, id, population, formattedPopulation } = country;
 
     const countryHtml = `
     <div class='country'>
@@ -70,13 +71,14 @@ function renderCountrylist() {
     <div>
       <ul> 
        <li>${name}</li>
-       <li>${population}</li>
+       <li>${formattedPopulation}</li>
       </ul>
     </div>
     </div>
     `;
 
-    countriesHtml += countryHtml;
+    countriesHtml += c;
+    ountryHtml;
   });
 
   countriesHtml += '</div>';
@@ -87,7 +89,7 @@ function renderCountryFavorites() {
   let favoritesHtml = '<div>';
 
   favoriteCountries.forEach((country) => {
-    const { name, flag, id, population } = country;
+    const { name, flag, id, population, formattedPopulation } = country;
 
     const favoritesCountryHtml = `
     <div class='country'>
@@ -100,7 +102,7 @@ function renderCountryFavorites() {
       <div>
         <ul> 
         <li>${name}</li>
-        <li>${population}</li>
+        <li>${formattedPopulation}</li>
         </ul>
     </div>
     </div>
@@ -125,15 +127,16 @@ function renderCountrySummary() {
     return accumulator + current.population;
   }, 0);
 
-  totalPopulationList.textContent = totalPopulation;
-  totalPopulationFavorites.textContent = totalFavorites;
+  totalPopulationList.textContent = formatNumber(totalPopulation);
+  totalPopulationFavorites.textContent = formatNumber(totalFavorites);
 
   //0-->represents first value
 }
 
 function handleCountryButtons() {
+  //ele retorna node list e não array
   const countryButtons = Array.from(tabCountries.querySelectorAll('.btn'));
-  const FavoriteButtons = Array.from(tabFavorites.querySelectorAll('.btn'));
+  const favoriteButtons = Array.from(tabFavorites.querySelectorAll('.btn'));
 
   countryButtons.forEach((button) => {
     button.addEventListener('click', () => addToFavorites(button.id));
@@ -144,6 +147,38 @@ function handleCountryButtons() {
   });
 }
 
-function addToFavorites(id) {}
+function addToFavorites(id) {
+  const countryToAdd = allCountries.find((country) => country.id === id);
 
-function removeFromFavorites(id) {}
+  //espalha o que ja existe e add o que quer inserir
+  favoriteCountries = [...favoriteCountries, countryToAdd];
+
+  //ordenando ordem alfabetica
+  favoriteCountries.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });
+
+  allCountries = allCountries.filter((country) => country.id !== id);
+  render();
+}
+
+function removeFromFavorites(id) {
+  const countryToRemove = favoriteCountries.find(
+    (country) => country.id === id
+  );
+
+  //espalha o que ja existe e add o que quer inserir
+  allCountries = [...allCountries, countryToRemove];
+
+  //ordenando ordem alfabetica
+  allCountries.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });
+
+  favoriteCountries = favoriteCountries.filter((country) => country.id !== id);
+  render();
+}
+
+function formatNumber(number) {
+  return numberFormat.format(number);
+}
