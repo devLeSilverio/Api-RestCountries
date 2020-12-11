@@ -15,7 +15,7 @@ let numberFormat = null;
 
 window.addEventListener('load', () => {
   tabCountries = document.querySelector('#tabCountries');
-  tabCountries = document.querySelector('#tabFavorites');
+  tabFavorites = document.querySelector('#tabFavorites');
   countCountries = document.querySelector('#countCountries');
   countFavorites = document.querySelector('#countFavorites');
 
@@ -47,33 +47,73 @@ async function fetchCountries() {
 
 function render() {
   renderCountrylist();
-  renderCountrylist();
   renderCountryFavorites();
   renderCountrySummary();
 
   handleCountryButtons();
 }
 
-renderCountrylist(){
-  let countriesHTML = "<div>";
+function renderCountrylist() {
+  let countriesHtml = '<div>';
 
-  allCountries.forEach(country =>{
-    const { name,flag,id,population} = country;
+  allCountries.forEach((country) => {
+    const { name, flag, id, population } = country;
 
     const countryHtml = `
     <div class='country'>
     <div>
+    <a id="${id}" class="waves-effect waves-light btn">+</a>
     </div>
     <div>
+    <img src="${flag}" alt="${name}" >
     </div>
     <div>
+      <ul> 
+       <li>${name}</li>
+       <li>${population}</li>
+      </ul>
     </div>
     </div>
     `;
-  })
-};
 
+    countriesHtml += countryHtml;
+  });
 
-renderCountryFavorites();
-renderCountrySummary();
+  countriesHtml += '</div>';
+  tabCountries.innerHTML = countriesHtml;
+}
+
+function renderCountryFavorites() {
+  let favoritesHtml = '<div>';
+
+  favoriteCountries.forEach((country) => {
+    const { name, flag, id, population } = country;
+
+    const favoritesCountryHtml = `
+    <div class='country'>
+      <div>
+      <a id="${id}" class="waves-effect waves-light btn red darken-4">-</a>
+      </div>
+      <div>
+      <img src="${flag}" alt="${name}" >
+      </div>
+      <div>
+        <ul> 
+        <li>${name}</li>
+        <li>${population}</li>
+        </ul>
+    </div>
+    </div>
+    `;
+    favoritesHtml += favoritesCountryHtml;
+  });
+
+  favoritesHtml += '</div>';
+
+  tabFavorites.innerHTML = favoritesHtml;
+}
+
+function renderCountrySummary() {
+  countCountries.textContent = allCountries.length;
+}
 handleCountryButtons();
